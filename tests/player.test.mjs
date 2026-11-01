@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+globalThis.requestAnimationFrame=()=>1;globalThis.cancelAnimationFrame=()=>{};globalThis.window={};
+globalThis.CustomEvent=class extends Event{constructor(type,options){super(type);this.detail=options.detail;}};
+let spoken=[];globalThis.speechSynthesis={speak:u=>spoken.push(u),cancel(){},pause(){},resume(){}};window.speechSynthesis=speechSynthesis;globalThis.SpeechSynthesisUtterance=class {constructor(text){this.text=text;}};
+const {PresenterPlayer}=await import('../src/player.mjs');
+const script={version:1,segments:[{text:'第一段',durationMs:300,pauseMs:0},{text:'第二段',durationMs:300,pauseMs:0}]};const delay=ms=>new Promise(r=>setTimeout(r,ms));
+test('speech mouth waits for actual onstart',async()=>{spoken=[];const p=new PresenterPlayer();p.load(script);await p.play();assert.equal(p.speaking,false);spoken[0].onstart();assert.equal(p.speaking,true);p.destroy();});
+test('stop rejects late speech callbacks and next segment',async()=>{spoken=[];const p=new PresenterPlayer();p.load(script);await p.play();const u=spoken[0];p.stop();u.onend();await delay(15);assert.equal(spoken.length,1);assert.equal(p.state,'idle');assert.equal(p.index,-1);p.destroy();});
+test('end callback during pause cannot advance queue',async()=>{spoken=[];const p=new PresenterPlayer();p.load(script);await p.play();p.pause();spoken[0].onend();await delay(20);assert.equal(spoken.length,1);assert.equal(p.state,'paused');await p.resume();await delay(20);assert.equal(spoken.length,2);p.destroy();});
+test('silent pause freezes segment and resume completes',async()=>{const p=new PresenterPlayer();p.load(script);await p.play({mode:'silent'});p.pause();await delay(340);assert.equal(p.index,0);assert.equal(p.state,'paused');await p.resume();await delay(330);assert.equal(p.index,1);p.stop();await delay(330);assert.equal(p.index,-1);p.destroy();});
+test('invalid load leaves running script unchanged',async()=>{const p=new PresenterPlayer();p.load(script);await p.play({mode:'silent'});assert.throws(()=>p.load({version:1,segments:[]}));assert.equal(p.state,'playing');assert.equal(p.script.segments.length,2);p.destroy();});
+test('speech errors emit explanatory failure and stop playback',async()=>{spoken=[];const p=new PresenterPlayer();p.load(script);let message='';p.addEventListener('error',e=>message=e.detail.message);await p.play();spoken[0].onerror({error:'voice-unavailable'});assert.equal(p.state,'idle');assert.match(message,/voice-unavailable/);p.destroy();});

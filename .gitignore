@@ -1,0 +1,26 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+.openai/
+.sites-runtime/
+.sites-checkout/
+output/
+coverage/
+*.log
+# User-created/imported private media must never be committed by default.
+private/
+user-data/
+*.wav
+*.mp3
+*.ogg
+*.mp4
+*.moc3
+*.cmo3
+/presenter-script*.json
+*.flac
+*.m4a
+*.webm
+__pycache__/
+*.pyc

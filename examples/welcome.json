@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "title": "欢迎来到虚拟主播工作台",
+  "segments": [
+    {
+      "text": "你好，欢迎来到虚拟主播工作台。我是由脚本驱动的虚拟主持人。",
+      "expression": "smile",
+      "intensity": 0.8,
+      "rate": 1,
+      "pitch": 1,
+      "pauseMs": 350,
+      "durationMs": 5700
+    },
+    {
+      "text": "你只需要准备口播稿，Agent 就能安排每一段的表情、语速和停顿。",
+      "expression": "serious",
+      "intensity": 0.8,
+      "rate": 1,
+      "pitch": 1,
+      "pauseMs": 350,
+      "durationMs": 5800
+    },
+    {
+      "text": "当然，也可以轻松一点。让我们一起，把文字变成有表情的讲述吧！",
+      "expression": "laugh",
+      "intensity": 0.8,
+      "rate": 1,
+      "pitch": 1,
+      "pauseMs": 350,
+      "durationMs": 5600
+    },
+    {
+      "text": "现在，试着替换这份稿件，开始你的第一场口播。",
+      "expression": "smile",
+      "intensity": 0.8,
+      "rate": 1,
+      "pitch": 1,
+      "pauseMs": 350,
+      "durationMs": 4300
+    }
+  ]
+}

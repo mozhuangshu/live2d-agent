@@ -1,0 +1,11 @@
+import http from 'node:http';
+import { readFile, stat } from 'node:fs/promises';
+import { resolve, extname, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {controlRoutes} from './control.mjs';
+const root=resolve(fileURLToPath(new URL('..', import.meta.url))),port=Number(process.env.PORT||4173),host=process.env.HOST||'127.0.0.1';
+const control=process.argv.includes('--control');
+if(control&&!['127.0.0.1','localhost','::1'].includes(host))throw Error('Agent control requires a loopback HOST; it cannot be exposed to a network.');
+const route=controlRoutes({enabled:control});
+const mime={'.html':'text/html; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml'};
+http.createServer(async(req,res)=>{try{const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(await route(req,res,pathname))return;if(!['GET','HEAD'].includes(req.method)){res.writeHead(405).end();return;}if(pathname.split('/').some(part=>part.startsWith('.')||part==='private'||part==='user-data')){res.writeHead(403).end();return;}let file=resolve(root,'.'+pathname);if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403).end();return;}if((await stat(file)).isDirectory())file=resolve(file,'index.html');res.writeHead(200,{'Content-Type':mime[extname(file)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(req.method==='HEAD'?undefined:await readFile(file));}catch{if(!res.headersSent)res.writeHead(404);res.end('Not found');}}).listen(port,host,()=>console.log(`Avatar Studio: http://${host}:${port}${control?' — local Agent control enabled':''}`));
