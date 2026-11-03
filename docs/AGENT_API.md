@@ -85,3 +85,8 @@ curl -X POST http://127.0.0.1:4173/api/commands -H 'Content-Type: application/js
 ```
 
 **Security boundary:** only trusted local processes. There is no authentication token; anyone who can run a local process can control this local presenter while the opt-in bridge is running. It must not be exposed through tunnels or proxies. Control mode refuses non-loopback HOST values, validates the socket peer and Host header, and rejects cross-origin requests. The ordinary static preview server can use HOST for development, but never with control mode. Close the server to revoke control. The bridge is not enabled on static hosting.
+
+
+## 本地单图角色
+
+`await window.avatarAgent.loadAvatar(pack)` 导入 version 1 / kind `raster-puppet` 的角色 JSON 对象。仅接受内嵌 PNG，不接受 URL 或代码；成功后停止当前播放并替换渲染器，失败保持现有角色。并发导入以最后一次为准，恢复 Lumi 会取消未完成解码。现有 `setExpression`、`load` 和 `play` 同样适用。此接口不是 Cubism 加载器；HTTP 控制桥不传输图片。生成命令和校准见 [单图流程](SINGLE_IMAGE_AVATAR.md)。

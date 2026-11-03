@@ -1,0 +1,33 @@
+{
+  "repository": "https://github.com/bellisji233/live2d-halfbody-skill",
+  "commit": "78b0be9674884d5b3834ba438cf5997347525773",
+  "files_sha256": {
+    "rigkit/check_art.py": "35a23cbe3bca1558c69f866a4ca8c49bb8cc4a83a98de455aec401677becc12b",
+    "rigkit/core.py": "281b6132e425e467aee8131e258bc48faa7e837c11e2cb0bdbdc1bd37db6af3b",
+    "rigkit/build.py": "4225a5a4d7f293ce2fd10279d8b5e3fdfd83e4e1ade72d839c87b4c7520f1f21",
+    "rigkit/variants.py": "ab6d30ecf8c485101627a363d41d3dadb76c6ed3c950a4bb35345bc0c8a1b4a0",
+    "rigkit/doctor.py": "b1065c78c909262634e689c4b41c020a76b591cc035e010bb7aa2b9ca92272cd",
+    "rigkit/vts.py": "5a19f45e3ef07db63d046be75d83b0586e95813acd0eb7432b857fd9a427ec2a",
+    "rigkit/extras.py": "41843b4e5449a28244c7c5d4d610b00156b5ed407266cdde36d701c81964a0a6",
+    "rigkit/surface.py": "74576bfbc9dd087bc65ffdd3fe5963b6d071936d1cb0ad6000ac3dcb924fdf7a",
+    "rigkit/context.py": "bfe52b1399b6828ea6bc6901cefc9df561ecb4a2a034626c7e3ccac7a0e41750",
+    "rigkit/preview.py": "1ea442a5aa0dbea2d2a4230b11158771af1248f2448dfcba41c5748ae76c45d3",
+    "rigkit/prepare.py": "2d9bb61dfeab393a7fd115ff2c4dc5b5b7371b679ba269d53791bd1cfdc7ac14",
+    "rigkit/config.py": "b8b650fe858a294048bf1b2789e46885a37a78b38d54855cd27153fe6e6d142f",
+    "rigkit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rigkit/synth.py": "c9f4e721ddb584054441095c59d978cf6f0616bcf86b2b1c08955d9a5a3bfc37",
+    "rigkit/rig.py": "1550a29b7fa507202ebd804110f150f9880068d2228099b19761149f816f31eb",
+    "rigkit/estimate.py": "b04ffe9c8964b7f4909ffa0b755d3ad811e8a8ecd4685595a0dcb236f7e9ba04",
+    "rigkit/moc.py": "5a46e0b65aaf694ffa40a475f9f69aec35c4418c2629a38182344bdb231d8b2a",
+    "rigkit/seethrough_local.py": "ed4183f0af644fb8b7289d3618c642be5fc855abec6e123a8709a18899926f80",
+    "rigkit/render.py": "437899799bea44438f3c060c9363ab4c2b9b0ae6bc2afa01d816f293645f9ea3",
+    "rigkit/split.py": "3384916be96fbf14b000549b4d031aa53133e0db9b6d60c3da8390573e9c8fa6",
+    "rigkit/seethrough.py": "e509363f279f5ca37d2761aaba734ae69644d7265fdb9e06e3f5091124eccd1f",
+    "rigkit/vendor/py-moc3/src/moc3/__main__.py": "c20af5c978f2c88a913c0b9b8f969c6422baa79cebb19b00918d3885b0ca24dc",
+    "rigkit/vendor/py-moc3/src/moc3/__init__.py": "bc8497e1322b4d8cb136e23aeaafff075b12e0a776b27030b4584310c586e4ef",
+    "rigkit/vendor/py-moc3/src/moc3/_core.py": "c93fe7a7455480fcfb153e7b4900f5ba597c779ed1f8493647ec6a6974a1f82b",
+    "LICENSE": "a0c4d428ab749f265659ec2e5596834895fea44196031380ef7e8522b9f648ab",
+    "rigkit/vendor/py-moc3/LICENSE": "0a457e9bdc6ffb7cccdf6f2fbf1a5d7ab19a635ae38bb166a74cb22c4312abf0",
+    "requirements.txt": "e5b15df10ef196007ecf1962c8e53c3a99f5833972549d70aec116921bf82495"
+  }
+}

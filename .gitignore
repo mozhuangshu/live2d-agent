@@ -24,3 +24,9 @@ user-data/
 *.webm
 __pycache__/
 *.pyc
+
+# Generated photo-bearing packs and calibration data are private by default.
+*.avatar.json
+calibration.png
+landmarks.json
+.venv/

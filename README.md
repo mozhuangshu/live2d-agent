@@ -17,6 +17,8 @@ npm start
 ```sh
 npm test
 npm run check
+# 单图生成器测试（需 Python 3 + Pillow）：
+npm run test:avatar
 ```
 
 也可将 `index.html` 和 `src/` 部署到任意静态服务器。不要直接双击 `file://` 打开 ES Modules 页面。
@@ -30,6 +32,20 @@ npm run check
 5. 导出 JSON 保存编排。文件可能含私人文案，请自行保管。
 
 系统朗读声音可能为空或不支持中文；这时可换浏览器/声音，或使用本地音频。项目不生成、训练或克隆真实人物声音。
+
+## 单图生成角色与表情技能
+
+已新增 Agent 技能 [single-image-avatar](.agents/skills/single-image-avatar/SKILL.md)：
+
+- **真实 Live2D 路径**：固定版本上游工作流链接、隐私与授权检查、源文件离线预检；需要变体/分层素材、模型依赖和授权 Cubism Core。未完成本项目中的 `.moc3` 构建或 VTS 验收，上游代码不随仓库分发。
+- **可直接运行的离线原型**：一张图片 + 眼眉嘴校准 → `.avatar.json`，在本网页导入后用六种表情和口型控制。它是 2D 图像木偶，**不是 Cubism 模型**。
+
+```sh
+# Python 3 + Pillow；输出只保存在本地，先检查 calibration.png
+python3 scripts/create-avatar.py portrait.png --out private/my-avatar
+```
+
+完整操作、依赖及验收边界见 [单图流程](docs/SINGLE_IMAGE_AVATAR.md)；踩坑与防回归清单见 [经验教训](docs/LESSONS_LEARNED.md)。
 
 ## 两种口型方案及边界
 
@@ -91,9 +107,9 @@ python3 examples/agent_driver.py --stop
 
 ## 隐私与安全
 
-- 没有摄像头、麦克风权限，没有人脸模板或校准数据。
+- 不请求摄像头、麦克风权限，不采集生物识别模板。用户生成的眼眉嘴区域校准只保存到其指定的本地文件。
 - 没有用户照片、真实姓名、邮箱、私有 Site 标识、API Key、连接凭据或旧项目 Git 历史。
-- 角色由代码绘制，没有外部图片、字体或跟踪脚本。
+- 默认角色由代码绘制，没有外部图片、字体或跟踪脚本。可选单图角色仅从本地角色包解码，不自动上传；包内含图片像素，应私下保管。
 - 稿件和本地音频不上传到本项目的服务器；音频仅通过内存 Object URL 使用。刷新页面清空稿件和音频。
 - **系统 TTS 并非保证离线**：浏览器列为在线/未知的声音可能把文案交给操作系统或语音服务供应商。敏感稿件请选择本地声音或导入预生成音频；不确定时使用静默预览。
 - 默认只提供当前页面 JavaScript API。显式运行 `npm run agent` 可开启仅回环地址的本地 HTTP 控制；它拒绝外部地址、跨来源和 DNS 重绑定请求，不接受可执行代码，不使用 `eval`。本地其他进程也能控制该端口，不要在不可信共享机器上启用。

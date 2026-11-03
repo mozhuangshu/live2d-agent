@@ -7,9 +7,10 @@
   "scripts": {
     "start": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check src/app.mjs && node --check src/core.mjs && node --check src/player.mjs && node --check src/avatar.mjs && node --check scripts/control.mjs && node --check scripts/serve.mjs",
+    "check": "node --check src/app.mjs && node --check src/core.mjs && node --check src/player.mjs && node --check src/avatar.mjs && node --check scripts/control.mjs && node --check scripts/serve.mjs && node --check src/image-avatar.mjs",
     "dev": "node scripts/serve.mjs",
-    "agent": "node scripts/serve.mjs --control"
+    "agent": "node scripts/serve.mjs --control",
+    "test:avatar": "python3 -m unittest discover -s tests -p \"test_*.py\""
   },
   "license": "MIT"
 }

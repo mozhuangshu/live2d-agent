@@ -1,9 +1,22 @@
 import {SAMPLE,EXPRESSIONS,LABELS,validateScript,textToScript} from './core.mjs';
 import {PresenterPlayer} from './player.mjs';
 import {AvatarRenderer} from './avatar.mjs';
-const $=id=>document.getElementById(id),player=new PresenterPlayer(),renderer=new AvatarRenderer($('avatar'));
+import {decodeAvatar,ImageAvatarRenderer} from './image-avatar.mjs';
+const $=id=>document.getElementById(id),player=new PresenterPlayer();
+let renderer=new AvatarRenderer($('avatar')),avatarLoad=0;
 let script=structuredClone(SAMPLE),tab='text',selected=0,voices=[],currentExpression='neutral';
 const report=(message,error=false)=>{$('notice').textContent=message;$('notice').classList.toggle('error',error);};
+async function loadAvatar(input,token=++avatarLoad){
+ const asset=await decodeAvatar(input);
+ if(token!==avatarLoad)return {cancelled:true};
+ player.stop();renderer.destroy();renderer=new ImageAvatarRenderer($('avatar'),asset);
+ renderer.setPose({expression:currentExpression,mouth:0});
+ $('character-name').textContent=asset.pack.name;$('character-kind').textContent='RASTER PUPPET · 非 CUBISM';
+ $('avatar').setAttribute('aria-label','本地图片 2D 图像木偶');
+ report('单图角色已载入。请检查眼眉嘴校准；这是 2D 图像木偶，不是 Cubism 模型。');return {name:asset.pack.name,kind:asset.pack.kind};
+}
+$('avatar-file').onchange=async e=>{const f=e.target.files[0],token=++avatarLoad;try{if(f){if(f.size>17*1024*1024)throw Error('角色包最大 17 MB');const input=JSON.parse(await f.text());if(token!==avatarLoad)return;await loadAvatar(input,token);}}catch(err){if(token===avatarLoad)report(err.message,true);}finally{e.target.value='';}};
+$('reset-avatar').onclick=()=>{avatarLoad++;player.stop();renderer.destroy();renderer=new AvatarRenderer($('avatar'));expression('neutral');$('character-name').textContent='Lumi';$('character-kind').textContent='ORIGINAL 2D HOST';$('avatar').setAttribute('aria-label','原创程序化 2D 虚拟主持人');report('已恢复 Lumi。');};
 function expression(name,intensity=.8){currentExpression=name;renderer.setPose({expression:name,intensity});$('expression-label').textContent=LABELS[name]||'自然';}
 function editor(){ $('script-editor').value=tab==='text'?script.segments.map(s=>s.text).join('\n\n'):JSON.stringify(script,null,2);}
 function renderList(){const list=$('script-list');list.replaceChildren();script.segments.forEach((s,i)=>{const b=document.createElement('button');b.className='segment'+(i===selected?' active':'');b.dataset.index=i;const number=document.createElement('span');number.className='num';number.textContent=String(i+1).padStart(2,'0');const text=document.createElement('span');text.className='text';text.textContent=s.text;const tag=document.createElement('span');tag.className='expr';tag.textContent=LABELS[s.expression];b.append(number,text,tag);b.onclick=()=>{if(['playing','paused'].includes(player.state))player.stop();selected=i;renderList();expression(s.expression,s.intensity);renderer.setPose({mouth:s.expression==='laugh'?.7:0});};list.append(b);});$('selected-label').textContent=`第 ${selected+1} 段 / 共 ${script.segments.length} 段`;document.querySelectorAll('[data-expression]').forEach(b=>b.classList.toggle('active',b.dataset.expression===script.segments[selected]?.expression));}
@@ -28,7 +41,7 @@ player.addEventListener('frame',e=>{if(['playing','paused','ended'].includes(pla
 player.addEventListener('error',e=>report(e.detail.message,true));
 function clean(on){document.body.classList.toggle('clean',on);$('exit-clean').hidden=!on;}$('clean-view').onclick=()=>clean(true);$('exit-clean').onclick=()=>clean(false);window.addEventListener('keydown',e=>{if(e.key==='Escape')clean(false);});
 // Only data, never executable code. Agent callers run in the same page context.
-window.avatarAgent=Object.freeze({version:1,load,play,pause:()=>player.pause(),resume:()=>player.resume(),stop:()=>{player.stop();expression('neutral');},status:()=>player.status(),getScript:()=>structuredClone(script),setExpression:(name,intensity=.8)=>{if(!EXPRESSIONS.includes(name)||!Number.isFinite(intensity)||intensity<0||intensity>1)throw Error('无效表情参数');expression(name,intensity);},loadAudio:file=>player.setAudio(file)});
+window.avatarAgent=Object.freeze({version:1,load,loadAvatar,play,pause:()=>player.pause(),resume:()=>player.resume(),stop:()=>{player.stop();expression('neutral');},status:()=>player.status(),getScript:()=>structuredClone(script),setExpression:(name,intensity=.8)=>{if(!EXPRESSIONS.includes(name)||!Number.isFinite(intensity)||intensity<0||intensity>1)throw Error('无效表情参数');expression(name,intensity);},loadAudio:file=>player.setAudio(file)});
 window.addEventListener('avatar:command',async e=>{try{const {command,script:input,options}=e.detail||{};if(command==='run'){load(input);await play(options);}else if(command==='load')load(input);else if(command==='play')await play(options);else if(command==='pause')player.pause();else if(command==='resume')await player.resume();else if(command==='stop')window.avatarAgent.stop();else throw Error('不支持的 Agent 命令');window.dispatchEvent(new CustomEvent('avatar:result',{detail:{ok:true,command,status:player.status()}}));}catch(error){report(error.message,true);window.dispatchEvent(new CustomEvent('avatar:result',{detail:{ok:false,error:error.message}}));}});
 load(SAMPLE);window.dispatchEvent(new CustomEvent('avatar:ready',{detail:{version:1}}));
 
